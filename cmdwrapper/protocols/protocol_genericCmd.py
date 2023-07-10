@@ -222,7 +222,7 @@ class GenericCmdProtocol(EMProtocol):
         output = ""
         error = " "
         with subprocess.Popen(cmd, stdout=stdout, stderr=stderr, bufsize=32, env=envvars,
-                              universal_newlines=True, cwd=self._getExtraPath(), shell=True) as p:
+                              universal_newlines=True, shell=True) as p:
             for line in p.stdout:
                 print(line, end='')  # process line here
                 output += line
