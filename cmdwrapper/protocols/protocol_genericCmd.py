@@ -181,8 +181,7 @@ class GenericCmdProtocol(EMProtocol):
             newDim = inputVol.getXDim()
             if not inputVol.getFileName().endswith('.mrc'):
                 inputVol.setLocation(convert.convertBinaryVol(inputVol, self._getTmpPath()))
-            convert.convertMask(inputVol, self.inputVolStarFname(i), newPix=newPix,
-                                       newDim=newDim, threshold=False)
+            convert.convertMask(inputVol, self.inputVolStarFname(i), newPix=newPix, newDim=newDim, threshold=False)
             assert os.path.basename(self.inputVolStarFname(i)) in cmd, \
                 f"Error, {self.inputVolStarFname(i)}  not found in your command"
 
@@ -217,14 +216,12 @@ class GenericCmdProtocol(EMProtocol):
         cmd = cmd.replace("$EXTRA_DIR", self._getExtraPath()+"/")
         with open(self._getExtraPath("command.txt"), "w") as f:
             f.write(cmd)
-        subprocess.check_call(cmd, shell=True, env=envvars)
 
         stdout = subprocess.PIPE
         stderr = subprocess.PIPE
-
         output = ""
         error = " "
-        with subprocess.Popen(cmd, stdout=stdout, stderr=stderr, bufsize=32,
+        with subprocess.Popen(cmd, stdout=stdout, stderr=stderr, bufsize=32, env=envvars,
                               universal_newlines=True, cwd=self._getExtraPath(), shell=True) as p:
             for line in p.stdout:
                 print(line, end='')  # process line here
