@@ -172,7 +172,8 @@ class GenericCmdProtocol(EMProtocol):
             convert.writeSetOfParticles(inputSet,
                                         self.inputPartsStarFname(i),
                                         postprocessImageRow=None)
-            assert self.inputPartsStarFname(i) in cmd, f"Error, {self.inputPartsStarFname(i)}  not found in your command"
+            assert os.path.basename(self.inputPartsStarFname(i)) in cmd, \
+                f"Error, {self.inputPartsStarFname(i)}  not found in your command"
 
         for i, pointer in enumerate(self.inputVolumes):
             inputVol = pointer.get()
@@ -182,7 +183,8 @@ class GenericCmdProtocol(EMProtocol):
                 inputVol.setLocation(convert.convertBinaryVol(inputVol, self._getTmpPath()))
             convert.convertMask(inputVol, self.inputVolStarFname(i), newPix=newPix,
                                        newDim=newDim, threshold=False)
-            assert self.inputVolStarFname(i) in cmd, f"Error, {self.inputVolStarFname(i)}  not found in your command"
+            assert os.path.basename(self.inputVolStarFname(i)) in cmd, \
+                f"Error, {self.inputVolStarFname(i)}  not found in your command"
 
     def executeCmd(self):
 
