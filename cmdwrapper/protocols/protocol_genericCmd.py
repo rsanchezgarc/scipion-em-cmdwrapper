@@ -210,7 +210,33 @@ class GenericCmdProtocol(EMProtocol):
         import subprocess
         print(f"env vars: {envvars}")
         print(cmd)
+        with open(self._getExtraPath("command.txt"), "w") as f:
+            f.write(cmd)
         subprocess.check_call(cmd, shell=True, cwd=self._getExtraPath(), env=envvars)
+
+        stdout = subprocess.PIPE
+        stderr = subprocess.PIPE
+
+        output = ""
+        error = " "
+        with subprocess.Popen(cmd, stdout=stdout, stderr=stderr, bufsize=32,
+                              universal_newlines=True, cwd=self._getExtraPath(), shell=True) as p:
+            for line in p.stdout:
+                print(line, end='')  # process line here
+                output += line
+
+            for line in p.stderr:
+                print(line, end='')  # process line here
+                error += line
+
+        returncode = p.returncode
+        if returncode != 0:
+            output += "ERROR:\n" + error
+        if hasattr(stderr, "close"):
+            stderr.close()
+        if hasattr(stdout, "close"):
+            stdout.close()
+
 
     def createOutputStep(self):
 
