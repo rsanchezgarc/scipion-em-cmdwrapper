@@ -227,11 +227,11 @@ class GenericCmdProtocol(EMProtocol):
         with subprocess.Popen(cmd, stdout=stdout, stderr=stderr, bufsize=32, env=envvars,
                               universal_newlines=True, shell=True) as p:
             for line in p.stdout:
-                print(line, end='')  # process line here
+                print(line, end='', flush=True)  # process line here
                 output += line
 
             for line in p.stderr:
-                print(line, end='')  # process line here
+                print(line, end='', flush=True)  # process line here
                 error += line
 
         returncode = p.returncode
