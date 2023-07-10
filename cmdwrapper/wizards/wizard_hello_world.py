@@ -1,7 +1,7 @@
 from pyworkflow.gui import ListTreeProviderString, dialog
 from pyworkflow.object import String
 from pyworkflow.wizard import Wizard
-from cmdwrapper.protocols import MyPluginPrefixHelloWorld
+from cmdwrapper.protocols.protocol_hello_world import MyPluginPrefixHelloWorld
 
 class MyPluginPrefixHelloWorldWizard(Wizard):
     # Dictionary to target protocol parameters
