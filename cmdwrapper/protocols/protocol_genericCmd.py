@@ -166,12 +166,13 @@ class GenericCmdProtocol(EMProtocol):
 
     def convertInputStep(self):
 
+        cmd = self.command.get()
         for i, pointer in enumerate(self.inputParticles):
             inputSet = pointer.get()
-            print(inputSet, self.inputPartsStarFname(i))
             convert.writeSetOfParticles(inputSet,
                                         self.inputPartsStarFname(i),
                                         postprocessImageRow=None)
+            assert self.inputPartsStarFname(i) in cmd, f"Error, {self.inputPartsStarFname(i)}  not found in your command"
 
         for i, pointer in enumerate(self.inputVolumes):
             inputVol = pointer.get()
@@ -181,6 +182,7 @@ class GenericCmdProtocol(EMProtocol):
                 inputVol.setLocation(convert.convertBinaryVol(inputVol, self._getTmpPath()))
             convert.convertMask(inputVol, self.inputVolStarFname(i), newPix=newPix,
                                        newDim=newDim, threshold=False)
+            assert self.inputVolStarFname(i) in cmd, f"Error, {self.inputVolStarFname(i)}  not found in your command"
 
     def executeCmd(self):
 
@@ -210,9 +212,10 @@ class GenericCmdProtocol(EMProtocol):
         import subprocess
         print(f"env vars: {envvars}")
         print(cmd)
+        cmd = cmd.replace("$EXTRA_DIR", self._getExtraPath()+"/")
         with open(self._getExtraPath("command.txt"), "w") as f:
             f.write(cmd)
-        subprocess.check_call(cmd, shell=True, cwd=self._getExtraPath(), env=envvars)
+        subprocess.check_call(cmd, shell=True, env=envvars)
 
         stdout = subprocess.PIPE
         stderr = subprocess.PIPE
@@ -230,12 +233,14 @@ class GenericCmdProtocol(EMProtocol):
                 error += line
 
         returncode = p.returncode
-        if returncode != 0:
-            output += "ERROR:\n" + error
         if hasattr(stderr, "close"):
             stderr.close()
         if hasattr(stdout, "close"):
             stdout.close()
+        if returncode != 0:
+            output += "ERROR:\n" + error
+            print(error, flush=True)
+            raise RuntimeError(output)
 
 
     def createOutputStep(self):
