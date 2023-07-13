@@ -129,17 +129,20 @@ class GenericCmdProtocol(EMProtocol):
         form.addParam('outputParticlesFilenames', StringParam,
                       default='outputParticles*.star',
                       label="Output particles filenames pattern",
-                      help='Pattern for the output particles filenames. Use * as a placeholder for the output number.')
+                      help='Pattern for the output particles filenames. Use * as a placeholder for the output number.'
+                           'It will be assumed that the outputFileName is written in $EXTRA_DIR')
 
-        form.addParam('outputMicrographsFilenames', StringParam,
-                      default='outputMicrographs*.star',
-                      label="Output micrographs filenames pattern",
-                      help='Pattern for the output micrographs filenames. Use * as a placeholder for the output number.')
+        # form.addParam('outputMicrographsFilenames', StringParam,
+        #               default='outputMicrographs*.star',
+        #               label="Output micrographs filenames pattern",
+        #               help='Pattern for the output micrographs filenames. Use * as a placeholder for the output number.'
+        #                    'It will be assumed that the outputFileName is written in $EXTRA_DIR')
 
         form.addParam('outputVolumesFilenames', StringParam,
                       default='outputVolume*.star',
                       label="Output volumes filenames pattern",
-                      help='Pattern for the output volumes filenames. Use * as a placeholder for the output number.')
+                      help='Pattern for the output volumes filenames. Use * as a placeholder for the output number.'
+                           'It will be assumed that the outputFileName is written in $EXTRA_DIR')
 
 
         __threads, __mpi = self._getDefaultParallel()
@@ -255,7 +258,6 @@ class GenericCmdProtocol(EMProtocol):
 
         if particleFnames:
             for particleFname in particleFnames:
-                particleFname = self._getExtraPath(particleFname)
                 partSet = self._createSetOfParticles()
                 # partSet.copyInfo(self.inputSet.get()) Not needed for relion 3.1 starfiles
                 convert.readSetOfParticles(particleFname, partSet,
@@ -279,7 +281,6 @@ class GenericCmdProtocol(EMProtocol):
         volFnames = glob.glob( self._getExtraPath(self.outputVolumesFilenames.get()))
         if volFnames:
             for volFname in volFnames:
-                volFname = self._getExtraPath(volFname)
                 vol = Volume()
                 vol.setFileName(volFname)
 
