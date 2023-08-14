@@ -5,3 +5,4 @@
 # **************************************************************************
 from .protocol_genericCmd import GenericCmdProtocol
 from .protocol_removeUnlinkedImages import RemoveUnlinkedImages
+from .protocol_downloadEMDB import DownloadEMDBMap
