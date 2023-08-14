@@ -25,11 +25,11 @@ with open('requirements.txt') as f:
 
 setup(
     name='scipion-em-cmdwrapper',  # Required
-    version='0.6',  # Required
+    version='0.7',  # Required
     description='Scipion plugin template.',  # Required
     long_description=long_description,  # Optional
     url='https://github.com/scipion-em/scipion-em-myplugin',  # Optional
-    author='you',  # Optional
+    author='Ruben Sanchez Garcia',  # Optional
     author_email='ruben.sanchez-garcia@stats.ox.ac.uk',  # Optional
     keywords='scipion cryoem imageprocessing scipion-3.0',  # Optional
     packages=find_packages(),
