@@ -27,8 +27,7 @@
 
 
 """
-This protocol allow you to run an arbitrary command on an input set of particles
-(or several), and generates a starfile with one or more new metadata columns.
+This protocol removes any metadata row for which the image file is not available.
 
 """
 import glob
@@ -36,17 +35,8 @@ import os.path
 import re
 import sys
 
-import pwem
-from pwem.objects import Volume
-from pyworkflow.object import Set
 from pyworkflow.protocol import Protocol, params, Integer, MultiPointerParam, BooleanParam, StringParam
-from pyworkflow.utils import Message, replaceBaseExt
-import pwem.objects as emobj
 from pwem.protocols import ProtProcessParticles, ProtParticles, EMProtocol, ProtSets
-import relion.convert as convert
-from pyworkflow.protocol import constants
-from pyworkflow.plugin import Plugin
-from pwem.objects import SetOfImages
 from pyworkflow.utils import ProgressBar, getListFromRangeString
 
 class RemoveUnlinkedImages(ProtSets):
