@@ -2,3 +2,5 @@ scipion-pyworkflow
 scipion-em
 scipion-em-relion
 mrcfile
+starfile
+starstack
