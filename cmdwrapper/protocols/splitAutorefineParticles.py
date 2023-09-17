@@ -50,7 +50,7 @@ class ProtRelionAutorefSplitData(ProtProcessParticles):
         form.addParam('numberOfSubsets', IntParam, default=2,
                       label="Number of subsets",
                       help="Number of subsets to split the particles into.")
-        form.addParam('randomize', BooleanParam, default=False,
+        form.addParam('randomize', BooleanParam, default=True,
                       label="Randomize particle indices?",
                       help="If set to True, particles will be randomly assigned to subsets.")
 
@@ -67,18 +67,14 @@ class ProtRelionAutorefSplitData(ProtProcessParticles):
         list_of_files = glob.glob(os.path.join(extra_path, '*_data.star'))
         latest_file = max(list_of_files, key=os.path.getctime)
 
-        starData = starfile.read(latest_file)
-
         psset = ParticlesStarSet(latest_file)
 
-        particles_data = starData['particles']
-        n_parts = len(particles_data)
         if self.randomize.get():
-            print("Shuffling idxs")
-            particles_data = particles_data.sample(frac=1).reset_index(drop=True)
+            print("Shuffling dataset")
+            psset.particles_md = psset.particles_md.sample(frac=1).reset_index()
 
         nSubsets = self.numberOfSubsets.get()
-        nParticles = len(particles_data)
+        nParticles = len(psset.particles_md)
         particlesPerSubset = nParticles // nSubsets
 
         for subsetIndex in range(nSubsets):
