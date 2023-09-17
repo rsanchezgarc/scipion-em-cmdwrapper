@@ -51,7 +51,7 @@ class ProtRelionAutorefSplitData(ProtProcessParticles):
                       label="Number of subsets",
                       help="Number of subsets to split the particles into.")
         form.addParam('randomize', BooleanParam, default=False,
-                      label="Randomize particles?",
+                      label="Randomize particle indices?",
                       help="If set to True, particles will be randomly assigned to subsets.")
 
     def _insertAllSteps(self):
@@ -73,10 +73,9 @@ class ProtRelionAutorefSplitData(ProtProcessParticles):
 
         particles_data = starData['particles']
         n_parts = len(particles_data)
-        idxs = list(range(n_parts))
         if self.randomize.get():
             print("Shuffling idxs")
-            random.shuffle(idxs)
+            particles_data = particles_data.sample(frac=1).reset_index(drop=True)
 
         nSubsets = self.numberOfSubsets.get()
         nParticles = len(particles_data)
