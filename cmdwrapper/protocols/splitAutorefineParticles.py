@@ -71,7 +71,7 @@ class ProtRelionAutorefSplitData(ProtProcessParticles):
 
         if self.randomize.get():
             print("Shuffling dataset")
-            psset.particles_md = psset.particles_md.sample(frac=1).reset_index()
+            psset.shuffle()
 
         nSubsets = self.numberOfSubsets.get()
         nParticles = len(psset.particles_md)
