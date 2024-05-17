@@ -207,7 +207,7 @@ class GenericCmdProtocol(EMProtocol):
             # For each match, split the string into the variable name and value, and set the variable in the environment
             for match in matches:
                 name, value = match.split('=', 1)
-                envvars[name] = str(value)
+                envvars[name] = str(value).rstrip()
 
         cmd = self.command.get()
         condaEnv = self.condaEnv.get()
