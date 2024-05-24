@@ -255,6 +255,8 @@ class GenericCmdProtocol(EMProtocol):
     def createOutputStep(self):
 
         particleFnames = glob.glob(self._getExtraPath(self.outputParticlesFilenames.get()))
+        particlesCounter = 0
+        volsCounter = 0
 
         if particleFnames:
             for particleFname in particleFnames:
@@ -263,8 +265,8 @@ class GenericCmdProtocol(EMProtocol):
                 convert.readSetOfParticles(particleFname, partSet,
                                            alignType=pwem.constants.ALIGN_PROJ
                                            )
-                self._defineOutputs(outputParticles0=partSet)
-
+                self._defineOutputs(**{"outputParticles"+str(particlesCounter): partSet})
+                particlesCounter += 1
                 if self.useParticles.get():
                     for pointer in self.inputParticles:
                         self._defineSourceRelation(pointer, partSet)
@@ -284,7 +286,8 @@ class GenericCmdProtocol(EMProtocol):
                 vol = Volume()
                 vol.setFileName(volFname)
 
-                self._defineOutputs(outputVol0=vol)
+                self._defineOutputs(**{"outputVol"+str(volsCounter): vol})
+                volsCounter += 1
                 if self.useParticles.get():
                     for pointer in self.inputParticles:
                         self._defineSourceRelation(pointer, vol)
