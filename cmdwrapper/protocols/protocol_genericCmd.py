@@ -197,11 +197,14 @@ class GenericCmdProtocol(EMProtocol):
 
     def executeCmd(self):
 
+        if self.addEnvsToScipion.get():
+            envvars = os.environ.copy()
+        else:
+            envvars = {}
+
         envvarsStr = self.envVars.get()
-        envvars = {}
         if envvarsStr:
-            if self.addEnvsToScipion.get():
-                envvars = os.environ.copy()
+
             pattern = r'\b\w+=.*?(?=\s*\w+=|$)'
             matches = re.findall(pattern, envvarsStr)
             # For each match, split the string into the variable name and value, and set the variable in the environment

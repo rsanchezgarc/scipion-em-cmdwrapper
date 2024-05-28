@@ -32,8 +32,8 @@ class TestGenericCmd(TestRelionBase):
         genericCmd = self.newProtocol(GenericCmdProtocol,
                                       useParticles=True,
                                       useVolumes=False,
-                                      condaEnv="scipion3",
-                                      command='pwd && ls $EXTRA_DIR/particles0.star && python -c "import starfile; data = starfile.read(\'$EXTRA_DIR/particles0.star\');data[\'particles\'][\'newMetadata\']=1.; print(data);starfile.write(data, \'$EXTRA_DIR/outputParticles0.star\')" '
+                                      condaEnv=None,
+                                      command='pwd && ls $EXTRA_DIR/particles0.star && scipion python -c "import starfile; data = starfile.read(\'$EXTRA_DIR/particles0.star\');data[\'particles\'][\'newMetadata\']=1.; print(data);starfile.write(data, \'$EXTRA_DIR/outputParticles0.star\')" '
                                       )
 
         genericCmd.inputParticles.set([self.protImport.outputParticles])
