@@ -45,6 +45,7 @@ import relion.convert as convert
 from pyworkflow.protocol import constants
 from pyworkflow.plugin import Plugin
 
+
 class GenericCmdProtocol(EMProtocol):
     """
     This protocol allow you to run an arbitrary command on an input set of particles
@@ -72,7 +73,6 @@ class GenericCmdProtocol(EMProtocol):
                       help='Select the sets of particles that you want to use. They will be accessible as '
                            '$EXTRA_DIR/particles0.star $EXTRA_DIR/particles1.star and so on',
                       allowsNull=True)
-
 
         form.addParam('useVolumes', BooleanParam,
                       default=False,
@@ -144,6 +144,11 @@ class GenericCmdProtocol(EMProtocol):
                       help='Pattern for the output volumes filenames. Use * as a placeholder for the output number.'
                            'It will be assumed that the outputFileName is written in $EXTRA_DIR')
 
+        form.addParam('extraLabels', StringParam,
+                      label="Output extra labels", default='',
+                      help="Space separated list of Relion labels "
+                           "(without leading underscore) to parse from "
+                           "the output STAR files. ")
 
         __threads, __mpi = self._getDefaultParallel()
 
@@ -254,9 +259,7 @@ class GenericCmdProtocol(EMProtocol):
             print(error, flush=True)
             raise RuntimeError(output)
 
-
     def createOutputStep(self):
-
         particleFnames = glob.glob(self._getExtraPath(self.outputParticlesFilenames.get()))
         particlesCounter = 0
         volsCounter = 0
@@ -266,7 +269,8 @@ class GenericCmdProtocol(EMProtocol):
                 partSet = self._createSetOfParticles()
                 # partSet.copyInfo(self.inputSet.get()) Not needed for relion 3.1 starfiles
                 convert.readSetOfParticles(particleFname, partSet,
-                                           alignType=pwem.constants.ALIGN_PROJ
+                                           alignType=pwem.constants.ALIGN_PROJ,
+                                           extraLabels=self.extraLabels.get().split()
                                            )
                 self._defineOutputs(**{"outputParticles"+str(particlesCounter): partSet})
                 particlesCounter += 1
