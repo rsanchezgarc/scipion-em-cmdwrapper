@@ -25,7 +25,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='scipion-em-cmdwrapper',  # Required
-    version='0.8c',  # Required
+    version='0.9c',  # Required
     description='Scipion plugin template.',  # Required
     long_description=long_description,  # Optional
     url='https://github.com/scipion-em/scipion-em-myplugin',  # Optional
