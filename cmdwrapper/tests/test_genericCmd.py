@@ -26,14 +26,14 @@ class TestGenericCmd(TestRelionBase):
         cls.partRef3dFn = cls.dataset.getFile('import/refine3d/extra/relion_data.star')
         cls.protImport = cls.runImportParticlesStar(cls.partRef3dFn, 7.08)
 
-    @classmethod
     def test_single(self):
 
         genericCmd = self.newProtocol(GenericCmdProtocol,
                                       useParticles=True,
                                       useVolumes=False,
                                       condaEnv=None,
-                                      command='pwd && ls $EXTRA_DIR/particles0.star && scipion python -c "import starfile; data = starfile.read(\'$EXTRA_DIR/particles0.star\');data[\'particles\'][\'newMetadata\']=1.; print(data);starfile.write(data, \'$EXTRA_DIR/outputParticles0.star\')" '
+                                      command='pwd && ls $EXTRA_DIR/particles0.star && scipion python -c "import starfile; data = starfile.read(\'$EXTRA_DIR/particles0.star\');data[\'particles\'][\'newMetadata\']=1.; print(data);starfile.write(data, \'$EXTRA_DIR/outputParticles0.star\')" ',
+                                      extraLabels='newMetadata'
                                       )
 
         genericCmd.inputParticles.set([self.protImport.outputParticles])
@@ -42,8 +42,11 @@ class TestGenericCmd(TestRelionBase):
         # print(dir(output))
         # print(output.getObjDict())
         # print(list(output.getAttributes()))
-        attr_names = [x[0] for x in output.getAttributes()]
-        print(attr_names)
-        assert "newMetadata" in attr_names, "Error, new metadata label not found" #I am not sure if it should be called newMetadata or _newMetadata
+        first = output.getFirstItem()
+        attributes = first.getObjDict()
+        self.assertTrue('_newMetadata' in attributes,
+                        msg="Error, new metadata label not found")
+        self.assertAlmostEqual(first._newMetadata.get(), 1.0)
+
         output.close()
 
