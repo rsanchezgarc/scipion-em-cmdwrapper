@@ -126,11 +126,14 @@ class GenericCmdProtocol(EMProtocol):
 
         form.addSection(label=Message.LABEL_OUTPUT)
 
+        form.addParam('areThereOutputParts', BooleanParam,
+                      default=True,
+                      label="Are there output particles?")
+
         form.addParam('outputParticlesFilenames', StringParam,
-                      default='outputParticles*.star',
+                      default='$EXTRA_DIR/outputParticles*.star',
                       label="Output particles filenames pattern",
-                      help='Pattern for the output particles filenames. Use * as a placeholder for the output number.'
-                           'It will be assumed that the outputFileName is written in $EXTRA_DIR')
+                      help='Pattern for the output particles filenames. Use * as a placeholder for the output number.')
 
         # form.addParam('outputMicrographsFilenames', StringParam,
         #               default='outputMicrographs*.star',
@@ -138,11 +141,14 @@ class GenericCmdProtocol(EMProtocol):
         #               help='Pattern for the output micrographs filenames. Use * as a placeholder for the output number.'
         #                    'It will be assumed that the outputFileName is written in $EXTRA_DIR')
 
+        form.addParam('areThereOutputVols', BooleanParam,
+                      default=True,
+                      label="Are there output vols?")
+
         form.addParam('outputVolumesFilenames', StringParam,
-                      default='outputVolume*.star',
+                      default='$EXTRA_DIR/outputVolume*.star',
                       label="Output volumes filenames pattern",
-                      help='Pattern for the output volumes filenames. Use * as a placeholder for the output number.'
-                           'It will be assumed that the outputFileName is written in $EXTRA_DIR')
+                      help='Pattern for the output volumes filenames. Use * as a placeholder for the output number.')
 
         form.addParam('extraLabels', StringParam,
                       label="Output extra labels", default='',
@@ -260,7 +266,8 @@ class GenericCmdProtocol(EMProtocol):
             raise RuntimeError(output)
 
     def createOutputStep(self):
-        particleFnames = glob.glob(self._getExtraPath(self.outputParticlesFilenames.get()))
+
+        particleFnames = glob.glob(self.replaceDirs(self.outputParticlesFilenames.get()))
         particlesCounter = 0
         volsCounter = 0
 
@@ -287,7 +294,7 @@ class GenericCmdProtocol(EMProtocol):
                         self._defineSourceRelation(pointer, partSet)
 
 
-        volFnames = glob.glob( self._getExtraPath(self.outputVolumesFilenames.get()))
+        volFnames = glob.glob( self.replaceDirs(self.outputVolumesFilenames.get()))
         if volFnames:
             for volFname in volFnames:
                 vol = Volume()
@@ -307,7 +314,10 @@ class GenericCmdProtocol(EMProtocol):
                     for pointer in self.inputVolumes:
                         self._defineSourceRelation(pointer, vol)
 
-        assert particleFnames or volFnames, "Error, no valid output detected"
+        if self.areThereOutputParts.get():
+            assert particleFnames, "Error, no valid output particles detected"
+        if self.areThereOutputVols.get():
+            assert volFnames, "Error, no valid output volumes detected"
     # --------------------------- INFO functions -----------------------------------
 
     def _msg(self):

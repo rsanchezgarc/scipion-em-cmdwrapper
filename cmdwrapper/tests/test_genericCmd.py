@@ -33,7 +33,8 @@ class TestGenericCmd(TestRelionBase):
                                       useVolumes=False,
                                       condaEnv=None,
                                       command='pwd && ls $EXTRA_DIR/particles0.star && scipion python -c "import starfile; data = starfile.read(\'$EXTRA_DIR/particles0.star\');data[\'particles\'][\'newMetadata\']=1.; print(data);starfile.write(data, \'$EXTRA_DIR/outputParticles0.star\')" ',
-                                      extraLabels='newMetadata'
+                                      extraLabels='newMetadata',
+                                      areThereOutputVols=False,
                                       )
 
         genericCmd.inputParticles.set([self.protImport.outputParticles])
